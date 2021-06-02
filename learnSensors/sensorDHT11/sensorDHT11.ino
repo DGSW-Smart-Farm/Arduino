@@ -1,27 +1,33 @@
 #include <DHT.h>
 
-#define pin 2
-#define type DHT11
+#define DHTPIN A1
+#define DHTTYPE DHT11
 
-DHT dht(pin, type);
+DHT dht(DHTPIN, DHTTYPE);
+
+int airHumi_value;
+int airTemp_value;
 
 void setup(){
     Serial.begin(9600);
-    Serial.flush(); 
-    Serial.println("Start Serial Printing");
 }
 
-void loop (){
-    int i;
-    float humi = dht.readHumidity();
-    float temp = dht.readTemperature();
+void loop(){
+    airHumi_value = dht.readHumidity();
+    airTemp_value = dht.readTemperature();
 
-    Serial.println("==========================");
-    print_line("airHumi : ", humi);
-    print_line("airTemp : ", temp);
-    Serial.println("==========================\n");
+    print_lines();
     delay(1000);
-    
+}
+
+
+
+
+void print_lines(){     //상태 출력
+    Serial.println("==========================");
+    print_line("airHumi : ", airHumi_value);
+    print_line("airTemp : ", airTemp_value);
+    Serial.println("==========================\n");
 }
 
 void print_line(String a, unsigned int b) { 
