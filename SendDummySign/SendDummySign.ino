@@ -35,6 +35,8 @@ void setup(){
 void loop(){
     changevalueRandom();
     print_lines();
+    delay(1000);
+
 }
 
 void changevalueRandom(){ 
@@ -57,7 +59,6 @@ void print_lines(){     //상태 출력
     print_line("ledStat : ", ledStat);
     print_line("ledTime : ", ledTime);
     Serial.println("==========================\n");
-    delay(1000);
 }
 
 void print_line(String a, unsigned int b) { 
