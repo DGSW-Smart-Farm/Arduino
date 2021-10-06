@@ -62,10 +62,16 @@ void setup() {
   // Exponential regression (지수 회귀분석)
   // CO2
   MQ135.setA(110.47); MQ135.setB(-2.862);
-  // Calibrated value
-  MQ135.setR0(16000);
-  
-  MQ135.init(); 
+
+  MQ135.init();
+
+  // Calibrated value - 10번 정도 깨끗한 공기를 측정 후, 평균을 내어 R0을 영점을 맞춰준다.
+  float calcR0 = 0;
+  for(int i = 1; i<=10; i ++) {
+    MQ135.update();  // Update data, the arduino will be read the voltage on the analog pin
+    calcR0 += MQ135.calibrate(3.6); // 3.6 - MQ135는 3.6ppm을 깨끗한 공기로 가정.
+  }
+  MQ135.setR0(calcR0/10);
 }
 
 // 센서 정보 보낼 시간 계산할 변수
@@ -94,7 +100,7 @@ void loop() {
   }
 
   writeTimer++;
-  delay(100);
+  delay(10);
 }
 
 void writeValues() {
