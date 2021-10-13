@@ -42,6 +42,11 @@ MQUnifiedsensor MQ135("Arduino MEGA", 5, 10, PIN_MQ135, "MQ135");
 
 // ----------------------------------------------------------------------
 
+// LED on/off 상태
+int ledStat = 0;
+// FAN on/off 상태
+int fanStat = 0;
+
 void setup() {
   Serial.begin(9600);
 
@@ -76,7 +81,7 @@ void setup() {
 
 // 센서 정보 보낼 시간 계산할 변수
 int writeTimer = 0;
-void loop() {
+void loop() { 
   if (Serial.available()) {
     char a = Serial.read();
 
@@ -84,12 +89,16 @@ void loop() {
       writeTimer = 100;
     }else if (a == 'A') { // LED 켜기
       digitalWrite(PIN_LED, HIGH);
+      ledStat = 1;
     }else if (a == 'a') { // LED 끄기
       digitalWrite(PIN_LED, LOW);
+      ledStat = 0;
     }else if (a == 'B') { // 팬 켜기
       digitalWrite(PIN_FAN, HIGH);
+      fanStat = 1;
     }else if (a == 'b') { // 팬 끄기
       digitalWrite(PIN_FAN, LOW);
+      fanStat = 0;
     }
   }
 
@@ -143,11 +152,29 @@ void writeValues() {
 #ifdef DEBUG
   Serial.print(" / CO2:");
   Serial.print(mqValue);
-  Serial.println("");
 #else
   Serial.write('C');
   //byte* b = (byte*)&mqValue;
   Serial.write((byte*)&mqValue, 4);
+#endif
+
+  // LED Stat
+#ifdef DEBUG
+  Serial.print(" / ledStat:");
+  Serial.print(ledStat);
+#else
+  Serial.write('L');
+  Serial.write((byte*)&ledStat, 1);
+#endif
+
+  // FAN Stat
+#ifdef DEBUG
+  Serial.print(" / fanStat:");
+  Serial.print(fanStat);
+  Serial.println("");
+#else
+  Serial.write('F');
+  Serial.write((byte*)&fanStat, 1);
   Serial.write('\n');
 #endif
 }
